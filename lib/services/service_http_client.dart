@@ -87,6 +87,14 @@ class ServiceHttpClient {
     }
   }
 
+  Future<http.Response> getWithToken(String endPoint) async {
+    final token = await secureStorage.read(key: 'authToken');
+    return http.get(
+      Uri.parse('$baseUrl$endPoint'),
+      headers: {'Authorization': 'Bearer $token', 'Accept': 'application/json'},
+    );
+  }
+
   //delete
   Future<http.Response> delete(String endPoint) async {
     final url = Uri.parse('$baseUrl$endPoint');
@@ -101,6 +109,24 @@ class ServiceHttpClient {
       return response;
     } catch (e) {
       throw Exception('Failed to delete data: $e');
+    }
+  }
+
+  Future<http.Response> deleteWithToken(String endPoint) async {
+    final token = await secureStorage.read(key: 'authToken');
+    final url = Uri.parse('$baseUrl$endPoint');
+    try {
+      final response = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      return response;
+    } catch (e) {
+      throw Exception('Failed to delete data with token: $e');
     }
   }
 }
