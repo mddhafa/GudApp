@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gudapp/data/repository/auth_repository.dart';
+import 'package:gudapp/data/repository/gudang_repository.dart';
 import 'package:gudapp/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:gudapp/presentation/auth/bloc/register/register_bloc.dart';
 import 'package:gudapp/presentation/auth/login_screen.dart';
+import 'package:gudapp/presentation/gudang/bloc/gudang_bloc.dart';
 import 'package:gudapp/services/service_http_client.dart';
 
 void main() {
@@ -23,6 +25,12 @@ class MyApp extends StatelessWidget {
       BlocProvider(
         create: (context) => RegisterBloc(authRepository: AuthRepository(ServiceHttpClient()))
       ),
+        BlocProvider(
+          create:
+              (context) => GudangBloc(
+                gudangRepository: GudangRepository(ServiceHttpClient()),
+              ),
+        )
     ], child: const MaterialApp(
       title: 'GudApp',
       debugShowCheckedModeBanner: false,

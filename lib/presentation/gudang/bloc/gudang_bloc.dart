@@ -12,7 +12,7 @@ class GudangBloc extends Bloc<GudangEvent, GudangState> {
   GudangBloc({required this.gudangRepository}) : super(GudangInitial()) {
     on<GetGudangList>(_onGetGudangList);
     on<AddGudang>(_onAddGudang);
-    on<UpdateGudang>(_onUpdateGudang);
+    on<UpdateGudangEvent>(_onUpdateGudang);
     on<DeleteGudang>(_onDeleteGudang);
   }
 
@@ -28,13 +28,28 @@ class GudangBloc extends Bloc<GudangEvent, GudangState> {
     );
   }
 
-  Future<void> _onAddGudang(AddGudang event, Emitter<GudangState> emit) async {
+  // Future<void> _onAddGudang(AddGudang event, Emitter<GudangState> emit) async {
+  //   emit(GudangLoading());
+
+  //   try {
+  //     await gudangRepository.createGudang(
+  //       event.gudangRequestModel.toJson() as Map<String, dynamic>,
+  //     );
+  //     add(GetGudangList());
+  //   } catch (e) {
+  //     emit(GudangError(message: e.toString()));
+  //   }
+  // }
+Future<void> _onAddGudang(AddGudang event, Emitter<GudangState> emit) async {
     emit(GudangLoading());
 
     try {
-      await gudangRepository.createGudang(
-        event.gudangRequestModel.toJson() as Map<String, dynamic>,
+      final result = await gudangRepository.createGudang(
+        event.gudangRequestModel.toMap(),
       );
+
+      emit(GudangSuccess(message: 'Gudang berhasil ditambahkan!'));
+
       add(GetGudangList());
     } catch (e) {
       emit(GudangError(message: e.toString()));
@@ -42,7 +57,7 @@ class GudangBloc extends Bloc<GudangEvent, GudangState> {
   }
 
   Future<void> _onUpdateGudang(
-    UpdateGudang event,
+    UpdateGudangEvent event,
     Emitter<GudangState> emit,
   ) async {
     emit(GudangLoading());
@@ -50,7 +65,7 @@ class GudangBloc extends Bloc<GudangEvent, GudangState> {
     try {
       await gudangRepository.updateGudang(
         event.id,
-        event.gudangRequestModel.toJson() as Map<String, dynamic>,
+        event.gudangRequestModel.toMap(),
       );
       add(GetGudangList());
     } catch (e) {

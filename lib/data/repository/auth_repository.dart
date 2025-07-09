@@ -35,6 +35,7 @@ class AuthRepository {
           value: loginResponse.user!.role,
         );
         log("Login successful: ${loginResponse.message}");
+        log("Logged in as role: ${loginResponse.user!.role}");
         return Right(loginResponse);
       } else {
         log("Login failed: ${jsonResponse['message']}");
@@ -57,6 +58,7 @@ class AuthRepository {
       
       log("Status Code: ${response.statusCode}");
       log("Response Body: ${response.body}");
+    
 
       if (response.body.isEmpty) {
         return Left('Server mengembalikan body kosong');

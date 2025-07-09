@@ -10,11 +10,12 @@ class AddGudang extends GudangEvent {
   AddGudang({required this.gudangRequestModel});
 }
 
-class UpdateGudang extends GudangEvent {
+class UpdateGudangEvent extends GudangEvent {
   final int id;
   final GudangRequestModel gudangRequestModel;
-  UpdateGudang({required this.id, required this.gudangRequestModel});
+  UpdateGudangEvent({required this.id, required this.gudangRequestModel});
 }
+
 
 class DeleteGudang extends GudangEvent {
   final int id;
