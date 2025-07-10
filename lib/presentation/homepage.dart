@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gudapp/data/repository/gudang_repository.dart';
+import 'package:gudapp/data/repository/items_repository.dart';
 import 'package:gudapp/presentation/auth/login_screen.dart';
 import 'package:gudapp/presentation/gudang/bloc/gudang_bloc.dart';
 import 'package:gudapp/presentation/gudang/gudang_screen.dart';
+import 'package:gudapp/presentation/items/bloc/items_bloc.dart';
+import 'package:gudapp/presentation/items/home_items_screen.dart';
 import 'package:gudapp/services/service_http_client.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -84,6 +87,14 @@ class _HomeScreenState extends State<HomeScreen> {
               gudangRepository: GudangRepository(ServiceHttpClient()),
             )..add(GetGudangList()),
         child: const GudangScreen(),
+      );
+    } else if (index == 3) {
+      return BlocProvider(
+        create:
+            (_) =>
+                ItemsBloc(itemsRepository: ItemsRepository(ServiceHttpClient()))
+                  ..add(GetItemsList()),
+        child: const ItemsScreen(),
       );
     }
 
