@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gudapp/data/model/request/gudang_request_model.dart';
 import 'package:gudapp/presentation/gudang/bloc/gudang_bloc.dart';
 import 'package:gudapp/presentation/gudang/maps/map_page.dart';
+import 'package:gudapp/core/extensions/form_text_custom.dart';
 
 class TambahGudang extends StatefulWidget {
   const TambahGudang({super.key});
@@ -61,19 +62,26 @@ class _TambahGudangState extends State<TambahGudang> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Tambah Gudang')),
+      appBar: AppBar(
+        title: const Text('Tambah Gudang'),
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 20,
+          color: Colors.red,
+        ),
+        foregroundColor: Colors.red,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
+              //nama
+              CustomTextFormField(
                 controller: _namaController,
-                decoration: const InputDecoration(
-                  labelText: 'Nama Gudang',
-                  border: OutlineInputBorder(),
-                ),
+                label: 'Nama Gudang',
                 validator:
                     (value) =>
                         value == null || value.trim().isEmpty
@@ -81,12 +89,11 @@ class _TambahGudangState extends State<TambahGudang> {
                             : null,
               ),
               const SizedBox(height: 16),
-              TextFormField(
+
+              //alamt
+              CustomTextFormField(
                 controller: _alamatController,
-                decoration: const InputDecoration(
-                  labelText: 'Alamat',
-                  border: OutlineInputBorder(),
-                ),
+                label: 'Alamat',
                 validator:
                     (value) =>
                         value == null || value.trim().isEmpty
