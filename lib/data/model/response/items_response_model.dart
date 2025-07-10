@@ -1,24 +1,24 @@
 import 'dart:convert';
 
-class ItemsRequest {
+class ItemsResponse {
   final String? message;
   final bool? success;
-  final List<Datum>? data;
+  final List<ItemsDatum>? data;
 
-  ItemsRequest({this.message, this.success, this.data});
+  ItemsResponse({this.message, this.success, this.data});
 
-  factory ItemsRequest.fromJson(String str) =>
-      ItemsRequest.fromMap(json.decode(str));
+  factory ItemsResponse.fromJson(String str) =>
+      ItemsResponse.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory ItemsRequest.fromMap(Map<String, dynamic> json) => ItemsRequest(
+  factory ItemsResponse.fromMap(Map<String, dynamic> json) => ItemsResponse(
     message: json["message"],
     success: json["success"],
     data:
         json["data"] == null
             ? []
-            : List<Datum>.from(json["data"]!.map((x) => Datum.fromMap(x))),
+            : List<ItemsDatum>.from(json["data"]!.map((x) => ItemsDatum.fromMap(x))),
   );
 
   Map<String, dynamic> toMap() => {
@@ -28,7 +28,7 @@ class ItemsRequest {
   };
 }
 
-class Datum {
+class ItemsDatum {
   final int? id;
   final String? name;
   final String? description;
@@ -38,7 +38,7 @@ class Datum {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  Datum({
+  ItemsDatum({
     this.id,
     this.name,
     this.description,
@@ -49,11 +49,11 @@ class Datum {
     this.updatedAt,
   });
 
-  factory Datum.fromJson(String str) => Datum.fromMap(json.decode(str));
+  factory ItemsDatum.fromJson(String str) => ItemsDatum.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory Datum.fromMap(Map<String, dynamic> json) => Datum(
+  factory ItemsDatum.fromMap(Map<String, dynamic> json) => ItemsDatum(
     id: json["id"],
     name: json["name"],
     description: json["description"],
