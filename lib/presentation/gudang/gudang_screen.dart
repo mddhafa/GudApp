@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gudapp/core/extensions/snackbar_message_custom.dart';
 import 'package:gudapp/presentation/gudang/bloc/gudang_bloc.dart';
 import 'package:gudapp/presentation/gudang/detail_gudang.dart';
 import 'package:gudapp/presentation/gudang/tambah_gudang.dart';
@@ -35,29 +36,18 @@ class _GudangScreenState extends State<GudangScreen> {
     return BlocListener<GudangBloc, GudangState>(
       listener: (context, state) {
         if (state is GudangSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: const [
-                  Icon(Icons.check_circle, color: Colors.white),
-                  SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      'Data berhasil dihapus!',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ],
-              ),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              duration: const Duration(seconds: 3),
-              margin: const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-            ),
+          showCustomSnackBar(
+            context,
+            'Data berhasil dihapus!',
+            backgroundColor: Colors.green,
+            icon: Icons.check_circle,
+          );
+        } else if (state is GudangError) {
+          showCustomSnackBar(
+            context,
+            '${state.message}',
+            backgroundColor: Colors.red,
+            icon: Icons.error,
           );
         }
       },
@@ -194,8 +184,28 @@ class _GudangScreenState extends State<GudangScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const TambahGudang(),
+                      PageRouteBuilder(
+                        pageBuilder:
+                            (_, animation, __) => FadeTransition(
+                              opacity: animation,
+                              child: const TambahGudang(),
+                            ),
+                        transitionsBuilder: (_, animation, __, child) {
+                          const begin = Offset(0.0, 1.0); // dari bawah
+                          const end = Offset.zero;
+                          const curve = Curves.ease;
+
+                          var tween = Tween(
+                            begin: begin,
+                            end: end,
+                          ).chain(CurveTween(curve: curve));
+                          var offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        },
                       ),
                     );
                   },

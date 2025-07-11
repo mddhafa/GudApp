@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gudapp/core/extensions/customesncakbar.dart';
 import 'package:gudapp/data/model/request/gudang_request_model.dart';
 import 'package:gudapp/presentation/gudang/bloc/gudang_bloc.dart';
 import 'package:gudapp/presentation/gudang/maps/map_page.dart';
@@ -27,11 +28,11 @@ class _TambahGudangState extends State<TambahGudang> {
 
       // Validasi apakah lokasi sudah dipilih
       if (latitude == null || longitude == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Silakan pilih lokasi di peta terlebih dahulu.'),
-            backgroundColor: Colors.red,
-          ),
+        showCustomSnackBar(
+          context,
+          'Silakan pilih lokasi di peta terlebih dahulu.',
+          backgroundColor: Colors.red,
+          icon: Icons.error,
         );
         return;
       }
@@ -46,13 +47,13 @@ class _TambahGudangState extends State<TambahGudang> {
       context.read<GudangBloc>().add(
         AddGudang(gudangRequestModel: gudangRequest),
       );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Gudang berhasil ditambahkan!'),
-          backgroundColor: Colors.green,
-        ),
+      showCustomSnackBar(
+        context,
+        'Gudang berhasil ditambahkan!',
+        backgroundColor: Colors.green,
+        icon: Icons.check_circle,
       );
+
       print('📤 Data yang dikirim: ${gudangRequest.toMap()}');
 
       Navigator.pop(context);

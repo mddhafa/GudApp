@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/gestures.dart';
 import 'package:gudapp/core/extensions/build_context_ext.dart';
+import 'package:gudapp/core/extensions/customesncakbar.dart';
 import 'package:gudapp/data/model/request/auth/register_request_model.dart';
 import 'package:gudapp/presentation/auth/bloc/register/register_bloc.dart';
 import 'package:gudapp/presentation/auth/login_screen.dart';
@@ -56,18 +57,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: BlocConsumer<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state is RegisterSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  state.responseModel.message ?? 'Registrasi berhasil',
-                ),
-              ),
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(
+            //     content: Text(
+            //       state.responseModel.message ?? 'Registrasi berhasil',
+            //     ),
+            //   ),
+            // );
+            showCustomSnackBar(
+              context,
+              state.responseModel.message ?? 'Registrasi berhasil',
+              backgroundColor: Colors.green,
+              icon: Icons.check_circle,
             );
             Navigator.pop(context);
           } else if (state is RegisterFailure) {
-            ScaffoldMessenger.of(
+            // ScaffoldMessenger.of(
+            //   context,
+            // ).showSnackBar(SnackBar(content: Text(state.error)));
+            showCustomSnackBar(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+              state.error,
+              backgroundColor: Colors.red,
+              icon: Icons.error,
+            );
           }
         },
         builder: (context, state) {

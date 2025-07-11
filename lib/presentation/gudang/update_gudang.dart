@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gudapp/core/extensions/form_text_custom.dart';
+import 'package:gudapp/core/extensions/snackbar_message_custom.dart';
 import 'package:gudapp/data/model/request/gudang_request_model.dart';
 import 'package:gudapp/presentation/gudang/bloc/gudang_bloc.dart';
 import 'package:gudapp/presentation/gudang/maps/map_page.dart';
@@ -37,11 +39,11 @@ class _UpdateGudangState extends State<UpdateGudang> {
       final alamat = _alamatController.text.trim();
 
       if (latitude == null || longitude == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Silakan pilih lokasi di peta terlebih dahulu.'),
-            backgroundColor: Colors.red,
-          ),
+        showCustomSnackBar(
+          context,
+          'Silakan pilih lokasi di peta terlebih dahulu.',
+          backgroundColor: Colors.red,
+          icon: Icons.error,
         );
         return;
       }
@@ -57,57 +59,49 @@ class _UpdateGudangState extends State<UpdateGudang> {
         UpdateGudangEvent(id: widget.id, gudangRequestModel: gudangRequest),
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Gudang berhasil diperbarui!'),
-          backgroundColor: Colors.green,
-        ),
+      showCustomSnackBar(
+        context,
+        'Gudang berhasil diperbarui!',
+        backgroundColor: Colors.green,
+        icon: Icons.check_circle,
       );
-
       Navigator.pop(context);
     }
-  }
-
-  void _pilihLokasiDiPeta() async {
-    setState(() {
-      latitude = -7.797068;
-      longitude = 110.370529;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Lokasi berhasil dipilih'),
-        backgroundColor: Colors.blue,
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Perbarui Gudang')),
+      appBar: AppBar(
+        title: const Text('Perbarui Gudang'),
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 20,
+          color: Colors.red,
+        ),
+        foregroundColor: Colors.red,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
+              CustomTextFormField(
                 controller: _namaController,
-                decoration: const InputDecoration(labelText: 'Nama Gudang'),
+                label: 'Nama Gudang',
                 validator:
                     (value) =>
-                        value == null || value.isEmpty
-                            ? 'Nama tidak boleh kosong'
+                        value == null || value.trim().isEmpty
+                            ? 'Nama wajib diisi'
                             : null,
               ),
               const SizedBox(height: 16),
-              TextFormField(
+
+              CustomTextFormField(
                 controller: _alamatController,
-                decoration: const InputDecoration(
-                  labelText: 'Alamat',
-                  border: OutlineInputBorder(),
-                ),
+                label: 'Alamat',
                 validator:
                     (value) =>
                         value == null || value.trim().isEmpty

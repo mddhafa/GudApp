@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gudapp/core/extensions/customesncakbar.dart';
 import 'package:gudapp/data/model/response/gudang_response_model.dart';
 import 'package:gudapp/data/model/request/gudang_request_model.dart';
 import 'package:gudapp/presentation/gudang/update_gudang.dart';
@@ -37,8 +38,13 @@ class _DetailGudangScreenState extends State<DetailGudangScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(gudang.name ?? 'Detail Gudang'),
-        backgroundColor: Colors.red,
-        foregroundColor: Colors.white,
+        centerTitle: true,
+        titleTextStyle: const TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 20,
+          color: Colors.red,
+        ),
+        foregroundColor: Colors.red,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -99,13 +105,11 @@ class _DetailGudangScreenState extends State<DetailGudangScreen> {
                   final lng = double.tryParse(gudang.longitude ?? '');
 
                   if (lat == null || lng == null || gudang.id == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Data lokasi atau ID gudang tidak valid.',
-                        ),
-                        backgroundColor: Colors.red,
-                      ),
+                    showCustomSnackBar(
+                      context,
+                      'Latitude atau Longitude tidak valid',
+                      backgroundColor: Colors.red,
+                      icon: Icons.error,
                     );
                     return;
                   }
