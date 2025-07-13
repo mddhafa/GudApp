@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  
 
   bool _isPasswordVisible = false;
 
@@ -42,15 +43,13 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginFailure) {
-            // ScaffoldMessenger.of(
-            //   context,
-            // ).showSnackBar(SnackBar(content: Text(state.error)));
             showCustomSnackBar(
               context,
               state.error,
@@ -58,11 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
               icon: Icons.error,
             );
           } else if (state is LoginSuccess) {
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   SnackBar(
-            //     content: Text(state.responseModel.message ?? 'Login berhasil'),
-            //   ),
-            // );
+            final role = state.responseModel.user?.role?.trim().toLowerCase();
+            final allowedRoles = ['admin', 'pegawai'];
+            final finalRole = allowedRoles.contains(role) ? role! : 'pegawai';
             showCustomSnackBar(
               context,
               state.responseModel.message ?? 'Login berhasil',
@@ -73,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (_) => const HomeScreen(),
+                builder: (_) => HomeScreen(userRole: finalRole), 
               ),
             );
           }
