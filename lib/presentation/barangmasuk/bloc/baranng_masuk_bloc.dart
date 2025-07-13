@@ -112,6 +112,7 @@ class BaranngMasukBloc extends Bloc<BaranngMasukEvent, BaranngMasukState> {
         event.id,
         event.barangMasukRequestModel.toMap(),
       );
+      emit(BaranngMasukSuccess(message: 'Barang masuk berhasil diupdate!'));
       add(GetBarangMasukList());
     } catch (error) {
       emit(BaranngMasukError(message: error.toString()));

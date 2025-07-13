@@ -75,7 +75,7 @@ class BarangMasukRequestModel {
     );
   }
 
-  /// ✅ Kirim data ini ke backend sebagai multipart (termasuk file)
+  // Kirim data ini ke backend sebagai multipart (termasuk file)
   Future<http.Response> sendToServer() async {
     final Map<String, String> fields = {
       'item_id': itemId.toString(),
@@ -89,7 +89,7 @@ class BarangMasukRequestModel {
 
     final client = ServiceHttpClient();
     final streamedResponse = await client.postMultipartWithToken(
-      endPoint: 'barang-masuk',
+      endPoint: 'barang_masuk',
       fields: fields,
       file: fotoPath != null ? File(fotoPath!) : null,
     );

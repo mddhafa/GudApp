@@ -41,16 +41,6 @@ class _HomeBarangMasukScreenState extends State<HomeBarangMasukScreen> {
           );
         }
 
-        if (state is AddBarangMasuk) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Barang berhasil ditambahkan'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          context.read<BaranngMasukBloc>().add(GetBarangMasukList());
-        }
-
         if (state is UpdateBarangMasuk) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -77,28 +67,28 @@ class _HomeBarangMasukScreenState extends State<HomeBarangMasukScreen> {
           child: Column(
             children: [
               // Search Field
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Cari barang masuk...',
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 16,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _searchQuery = value.toLowerCase();
-                  });
-                },
-              ),
-              const SizedBox(height: 16),
+              // TextField(
+              //   decoration: InputDecoration(
+              //     hintText: 'Cari barang masuk...',
+              //     prefixIcon: const Icon(Icons.search),
+              //     filled: true,
+              //     fillColor: Colors.white,
+              //     contentPadding: const EdgeInsets.symmetric(
+              //       vertical: 12,
+              //       horizontal: 16,
+              //     ),
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.circular(12),
+              //       borderSide: BorderSide.none,
+              //     ),
+              //   ),
+              //   onChanged: (value) {
+              //     setState(() {
+              //       _searchQuery = value.toLowerCase();
+              //     });
+              //   },
+              // ),
+              // const SizedBox(height: 16),
 
               // List Barang Masuk
               Expanded(
