@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gudapp/data/repository/auth_repository.dart';
+import 'package:gudapp/data/repository/barang_keluar_repository.dart';
+import 'package:gudapp/data/repository/barang_masuk_repository.dart';
 import 'package:gudapp/data/repository/gudang_repository.dart';
+import 'package:gudapp/data/repository/items_repository.dart';
 import 'package:gudapp/presentation/auth/bloc/login/login_bloc.dart';
 import 'package:gudapp/presentation/auth/bloc/register/register_bloc.dart';
 import 'package:gudapp/presentation/auth/login_screen.dart';
+import 'package:gudapp/presentation/barangkeluar/bloc/barangkeluar_bloc.dart';
+import 'package:gudapp/presentation/barangmasuk/bloc/baranng_masuk_bloc.dart';
 import 'package:gudapp/presentation/gudang/bloc/gudang_bloc.dart';
+import 'package:gudapp/presentation/items/bloc/items_bloc.dart';
 import 'package:gudapp/services/service_http_client.dart';
 
 void main() {
@@ -30,7 +36,29 @@ class MyApp extends StatelessWidget {
               (context) => GudangBloc(
                 gudangRepository: GudangRepository(ServiceHttpClient()),
               ),
-        )
+        ),
+        BlocProvider(
+          create:
+              (context) => ItemsBloc(
+                itemsRepository: ItemsRepository(ServiceHttpClient()),
+              ),
+        ),
+        BlocProvider(
+          create:
+              (context) => BaranngMasukBloc(
+                barangMasukRepository: BarangMasukRepository(
+                  ServiceHttpClient(),
+                ),
+              ),
+        ),
+        BlocProvider(
+          create:
+              (context) => BarangkeluarBloc(
+                barangKeluarRepository: BarangKeluarRepository(
+                  ServiceHttpClient(),
+                ),
+              ),
+        ),
     ], child: const MaterialApp(
       title: 'GudApp',
       debugShowCheckedModeBanner: false,
