@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gudapp/data/repository/barang_keluar_repository.dart';
+import 'package:gudapp/data/repository/barang_masuk_repository.dart';
 import 'package:gudapp/data/repository/gudang_repository.dart';
 import 'package:gudapp/data/repository/items_repository.dart';
 import 'package:gudapp/presentation/auth/login_screen.dart';
+import 'package:gudapp/presentation/barangkeluar/bloc/barangkeluar_bloc.dart';
+import 'package:gudapp/presentation/barangkeluar/home_barang_keluar_screen.dart';
+import 'package:gudapp/presentation/barangmasuk/bloc/baranng_masuk_bloc.dart';
+import 'package:gudapp/presentation/barangmasuk/home_barang_masuk_screen.dart';
+import 'package:gudapp/presentation/dashboard_pegawai_screen.dart';
+import 'package:gudapp/presentation/dashboard_screen.dart';
 import 'package:gudapp/presentation/gudang/bloc/gudang_bloc.dart';
 import 'package:gudapp/presentation/gudang/gudang_screen.dart';
 import 'package:gudapp/presentation/items/bloc/items_bloc.dart';
@@ -10,16 +18,26 @@ import 'package:gudapp/presentation/items/home_items_screen.dart';
 import 'package:gudapp/services/service_http_client.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String userRole; // Role bisa 'admin', dll.
+
+  const HomeScreen({super.key, required this.userRole});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 2;
+  int _currentIndex = 0;
+  late String userRole;
+
+  @override
+  void initState() {
+    super.initState();
+    userRole = widget.userRole; // Ambil dari parameter
+  }
 
   final List<String> _titles = [
+    'Dashboard',
     'Barang Masuk',
     'Barang Keluar',
     'Gudang',
@@ -68,6 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         items: const [
           BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Beranda',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.move_to_inbox),
             label: 'Masuk',
           ),
@@ -80,43 +102,91 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildPage(int index) {
-    if (index == 2) {
-      return BlocProvider(
-        create:
-            (_) => GudangBloc(
-              gudangRepository: GudangRepository(ServiceHttpClient()),
-            )..add(GetGudangList()),
-        child: const GudangScreen(),
-      );
-    } else if (index == 3) {
-      return BlocProvider(
-        create:
-            (_) =>
-                ItemsBloc(itemsRepository: ItemsRepository(ServiceHttpClient()))
-                  ..add(GetItemsList()),
-        child: const ItemsScreen(),
-      );
-    }
+    switch (index) {
+      case 0:
+        if (userRole == 'admin') {
+          return BlocProvider(
+            create:
+                (_) => ItemsBloc(
+                  itemsRepository: ItemsRepository(ServiceHttpClient()),
+                )..add(GetItemsList()),
+            child: const DashboardAdminScreen(), // Dashboard admin
+          );
+        } else if (userRole == 'pegawai') {
+          return const DashboardPegawaiScreen(); //Dashboard pegawai
+        } else {
+          return const Center(child: Text('Role tidak dikenali'));
+        }
 
+      case 1:
+        return BlocProvider(
+          create:
+              (_) => BaranngMasukBloc(
+                barangMasukRepository: BarangMasukRepository(
+                  ServiceHttpClient(),
+                ),
+              )..add(GetBarangMasukList()),
+          child: const HomeBarangMasukScreen(),
+        );
+      case 2:
+        return BlocProvider(
+          create:
+              (_) => BarangkeluarBloc(
+                barangKeluarRepository: BarangKeluarRepository(
+                  ServiceHttpClient(),
+                ),
+              )..add(GetBarangKeluarList()),
+          child: const HomeBarangKeluarScreen(),
+        );
+      case 3:
+        return BlocProvider(
+          create:
+              (_) => GudangBloc(
+                gudangRepository: GudangRepository(ServiceHttpClient()),
+              )..add(GetGudangList()),
+          child: const GudangScreen(),
+        );
+      case 4:
+        return BlocProvider(
+          create:
+              (_) => ItemsBloc(
+                itemsRepository: ItemsRepository(ServiceHttpClient()),
+              )..add(GetItemsList()),
+          child: const ItemsScreen(),
+        );
+      default:
+        return const SizedBox();
+    }
+  }
+
+  // Widget _buildDashboard() {
+  //   return Center(
+  //     key: const ValueKey('dashboard'),
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Icon(Icons.dashboard, size: 60, color: Colors.red[300]),
+  //         const SizedBox(height: 16),
+  //         Text(
+  //           'Selamat Datang, ${widget.userRole.toUpperCase()}',
+  //           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+  //         ),
+  //         const SizedBox(height: 8),
+  //         const Text("Gunakan menu di bawah untuk navigasi."),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget _buildPlaceholder(String label) {
     return Center(
-      key: ValueKey(index),
+      key: ValueKey(label),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            index == 0
-                ? Icons.move_to_inbox
-                : index == 1
-                ? Icons.logout
-                : Icons.inventory_2,
-            size: 60,
-            color: Colors.red[300],
-          ),
+          const Icon(Icons.block, size: 60, color: Colors.grey),
           const SizedBox(height: 16),
-          Text(
-            _titles[index],
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
-          ),
+          Text('$label belum tersedia', style: const TextStyle(fontSize: 20)),
         ],
       ),
     );
