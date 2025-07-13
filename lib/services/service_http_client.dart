@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -129,4 +130,28 @@ class ServiceHttpClient {
       throw Exception('Failed to delete data with token: $e');
     }
   }
+
+  //post multipart
+  Future<http.StreamedResponse> postMultipartWithToken({
+    required String endPoint,
+    required Map<String, String> fields,
+    File? file,
+  }) async {
+    final token = await secureStorage.read(key: 'authToken');
+    final uri = Uri.parse('$baseUrl$endPoint');
+
+    var request =
+        http.MultipartRequest('POST', uri)
+          ..headers['Authorization'] = 'Bearer $token'
+          ..headers['Accept'] = 'application/json'
+          ..fields.addAll(fields);
+
+    if (file != null) {
+      request.files.add(await http.MultipartFile.fromPath('foto', file.path));
+    }
+
+    return request.send();
+  }
+
+
 }
