@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:gudapp/data/model/response/items_response_model.dart';
 import 'package:gudapp/presentation/items/update_items_screen.dart';
+import 'package:intl/intl.dart';
 
 class DetailItemScreen extends StatelessWidget {
   final ItemsDatum item;
 
   const DetailItemScreen({super.key, required this.item});
 
+
   @override
   Widget build(BuildContext context) {
+
+    final currencyFormat = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp ',
+      decimalDigits: 2,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(item.name ?? 'Detail Item'),
@@ -36,9 +45,15 @@ class DetailItemScreen extends StatelessWidget {
                 const SizedBox(height: 12),
                 _buildDetailRow('Deskripsi', item.description ?? '-'),
                 const SizedBox(height: 12),
+                // _buildDetailRow(
+                //   'Harga',
+                //   'Rp ${(double.tryParse(item.price ?? '') ?? 0).toStringAsFixed(2)}',
+                // ),
                 _buildDetailRow(
                   'Harga',
-                  'Rp ${(double.tryParse(item.price ?? '') ?? 0).toStringAsFixed(2)}',
+                  currencyFormat.format(
+                    double.tryParse(item.price ?? '0') ?? 0,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 _buildDetailRow('Stok', item.stock?.toString() ?? '0'),

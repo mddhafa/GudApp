@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gudapp/presentation/gudang/detail_gudang.dart';
 import 'package:gudapp/presentation/items/bloc/items_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:gudapp/presentation/items/detail_items_screen.dart';
 import 'package:gudapp/presentation/items/tambah_items_screen.dart';
 
@@ -20,6 +21,13 @@ class _ItemsScreenState extends State<ItemsScreen> {
     super.initState();
     context.read<ItemsBloc>().add(GetItemsList());
   }
+
+  final currencyFormat = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 2,
+  );
+  
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +175,7 @@ class _ItemsScreenState extends State<ItemsScreen> {
                                             ),
                                             const SizedBox(height: 4),
                                             Text(
-                                              'Harga: Rp ${(double.tryParse(item.price ?? '') ?? 0).toStringAsFixed(2)}',
+                                              'Harga: ${currencyFormat.format(double.tryParse(item.price ?? '0') ?? 0)}',
                                               style: const TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.black87,
