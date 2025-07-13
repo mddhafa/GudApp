@@ -7,6 +7,8 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType keyboardType;
   final bool isObscure;
   final int maxLines;
+  final VoidCallback? onTap;
+  final bool readOnly;
 
   const CustomTextFormField({
     super.key,
@@ -16,6 +18,8 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.isObscure = false,
     this.maxLines = 1,
+    this.onTap,
+    this.readOnly = false,
   });
 
   @override
@@ -34,6 +38,8 @@ class CustomTextFormField extends StatelessWidget {
         ),
       ),
       validator: validator,
+      onTap: onTap,
+      readOnly: readOnly,
     );
   }
 }

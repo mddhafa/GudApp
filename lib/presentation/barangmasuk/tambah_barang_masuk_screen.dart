@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gudapp/core/extensions/customesncakbar.dart';
 import 'package:gudapp/core/extensions/form_text_custom.dart';
 import 'package:gudapp/data/model/request/barang_masuk_request_model.dart';
 import 'package:gudapp/presentation/barangmasuk/bloc/baranng_masuk_bloc.dart';
@@ -60,8 +61,6 @@ class _TambahBarangMasukScreenState extends State<TambahBarangMasukScreen> {
       context.read<BaranngMasukBloc>().add(
         AddBarangMasuk(barangMasukRequestModel: model),
       );
-
-      Navigator.pop(context, true);
     }
   }
 
@@ -78,133 +77,169 @@ class _TambahBarangMasukScreenState extends State<TambahBarangMasukScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tambah Barang Masuk'),
-        centerTitle: true,
-        titleTextStyle: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 20,
-          color: Colors.red,
+    return BlocListener<BaranngMasukBloc, BaranngMasukState>(
+      listener: (context, state) {
+        if (state is BaranngMasukSuccess) {
+          showCustomSnackBar(
+            context,
+            state.message,
+            backgroundColor: Colors.green,
+            icon: Icons.check_circle,
+          );
+          Navigator.pop(context, true); 
+        } else if (state is BaranngMasukError) {
+          showCustomSnackBar(
+            context,
+            state.message,
+            backgroundColor: Colors.red,
+            icon: Icons.error,
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Tambah Barang Masuk'),
+          centerTitle: true,
+          titleTextStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+            color: Colors.red,
+          ),
+          foregroundColor: Colors.red,
         ),
-        foregroundColor: Colors.red,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              CustomTextFormField(
-                controller: _itemIdController,
-                label: 'Item ID',
-                keyboardType: TextInputType.number,
-                validator:
-                    (value) =>
-                        value == null || value.isEmpty ? 'Wajib diisi' : null,
-              ),
-              const SizedBox(height: 12),
-              CustomTextFormField(
-                controller: _gudangIdController,
-                label: 'Gudang ID',
-                keyboardType: TextInputType.number,
-                validator:
-                    (value) =>
-                        value == null || value.isEmpty ? 'Wajib diisi' : null,
-              ),
-              const SizedBox(height: 12),
-              CustomTextFormField(
-                controller: _qtyController,
-                label: 'Jumlah',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) return 'Wajib diisi';
-                  final parsed = int.tryParse(value);
-                  if (parsed == null || parsed <= 0)
-                    return 'Jumlah tidak valid';
-                  return null;
-                },
-              ),
-              const SizedBox(height: 12),
-              CustomTextFormField(
-                controller: _tanggalController,
-                label: 'Tanggal Masuk (YYYY-MM-DD)',
-                keyboardType: TextInputType.datetime,
-                validator:
-                    (value) =>
-                        value == null || value.isEmpty ? 'Wajib diisi' : null,
-              ),
-              const SizedBox(height: 12),
-              CustomTextFormField(
-                controller: _keteranganController,
-                label: 'Keterangan',
-              ),
-              const SizedBox(height: 12),
-              CustomTextFormField(
-                controller: _hargaBeliController,
-                label: 'Harga Beli',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value != null && value.isNotEmpty) {
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              children: [
+                CustomTextFormField(
+                  controller: _itemIdController,
+                  label: 'Item ID',
+                  keyboardType: TextInputType.number,
+                  validator:
+                      (value) =>
+                          value == null || value.isEmpty ? 'Wajib diisi' : null,
+                ),
+                const SizedBox(height: 12),
+                CustomTextFormField(
+                  controller: _gudangIdController,
+                  label: 'Gudang ID',
+                  keyboardType: TextInputType.number,
+                  validator:
+                      (value) =>
+                          value == null || value.isEmpty ? 'Wajib diisi' : null,
+                ),
+                const SizedBox(height: 12),
+                CustomTextFormField(
+                  controller: _qtyController,
+                  label: 'Jumlah',
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return 'Wajib diisi';
                     final parsed = int.tryParse(value);
-                    if (parsed == null || parsed < 0)
-                      return 'Harga tidak valid';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: _pickImageFromGallery,
-                    icon: const Icon(Icons.photo, color: Colors.white),
-                    label: const Text(
-                      'Galeri',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton.icon(
-                    onPressed: _captureFromCamera,
-                    icon: const Icon(Icons.camera_alt, color: Colors.white),
-                    label: const Text(
-                      'Kamera',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  if (_fotoPath != null)
-                    Expanded(
-                      child: Text(
-                        File(_fotoPath!).path.split('/').last,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 12),
+                    if (parsed == null || parsed <= 0)
+                      return 'Jumlah tidak valid';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                CustomTextFormField(
+                  controller: _tanggalController,
+                  label: 'Tanggal Masuk (YYYY-MM-DD)',
+                  keyboardType:
+                      TextInputType.none, 
+                  readOnly: true,
+                  onTap: () async {
+                    final pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
+                    if (pickedDate != null) {
+                      final formattedDate =
+                          pickedDate.toIso8601String().split('T').first;
+                      _tanggalController.text = formattedDate;
+                    }
+                  },
+                  validator:
+                      (value) =>
+                          value == null || value.isEmpty ? 'Wajib diisi' : null,
+                ),
+
+                const SizedBox(height: 12),
+                CustomTextFormField(
+                  controller: _keteranganController,
+                  label: 'Keterangan',
+                ),
+                const SizedBox(height: 12),
+                CustomTextFormField(
+                  controller: _hargaBeliController,
+                  label: 'Harga Beli',
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      final parsed = int.tryParse(value);
+                      if (parsed == null || parsed < 0)
+                        return 'Harga tidak valid';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _pickImageFromGallery,
+                      icon: const Icon(Icons.photo, color: Colors.white),
+                      label: const Text(
+                        'Galeri',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
                       ),
                     ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: _submitForm,
-                icon: const Icon(Icons.save, color: Colors.white),
-                label: const Text(
-                  'Simpan',
-                  style: TextStyle(color: Colors.white),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: _captureFromCamera,
+                      icon: const Icon(Icons.camera_alt, color: Colors.white),
+                      label: const Text(
+                        'Kamera',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    if (_fotoPath != null)
+                      Expanded(
+                        child: Text(
+                          File(_fotoPath!).path.split('/').last,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                  ],
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  textStyle: const TextStyle(fontSize: 16),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: _submitForm,
+                  icon: const Icon(Icons.save, color: Colors.white),
+                  label: const Text(
+                    'Simpan',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    textStyle: const TextStyle(fontSize: 16),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
