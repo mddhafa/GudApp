@@ -15,6 +15,7 @@ import 'package:gudapp/presentation/gudang/bloc/gudang_bloc.dart';
 import 'package:gudapp/presentation/gudang/gudang_screen.dart';
 import 'package:gudapp/presentation/items/bloc/items_bloc.dart';
 import 'package:gudapp/presentation/items/home_items_screen.dart';
+import 'package:gudapp/presentation/profile/profile_pegawai_screen.dart';
 import 'package:gudapp/services/service_http_client.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -43,14 +44,36 @@ class _HomeScreenState extends State<HomeScreen> {
     'Gudang',
     'Item',
   ];
+  
 
   @override
   Widget build(BuildContext context) {
+final bool isPegawai = widget.userRole == 'pegawai';
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
+        leading:
+            isPegawai
+                ? Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ProfilePegawaiScreen(),
+                        ),
+                      );
+                    },
+                    child: const CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.person, color: Colors.red),
+                    ),
+                  ),
+                )
+                : null,
         title: Text(
           _titles[_currentIndex],
           style: const TextStyle(
@@ -178,19 +201,19 @@ class _HomeScreenState extends State<HomeScreen> {
   //   );
   // }
 
-  Widget _buildPlaceholder(String label) {
-    return Center(
-      key: ValueKey(label),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.block, size: 60, color: Colors.grey),
-          const SizedBox(height: 16),
-          Text('$label belum tersedia', style: const TextStyle(fontSize: 20)),
-        ],
-      ),
-    );
-  }
+  // Widget _buildPlaceholder(String label) {
+  //   return Center(
+  //     key: ValueKey(label),
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         const Icon(Icons.block, size: 60, color: Colors.grey),
+  //         const SizedBox(height: 16),
+  //         Text('$label belum tersedia', style: const TextStyle(fontSize: 20)),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   void _showLogoutDialog(BuildContext context) {
     showDialog(
